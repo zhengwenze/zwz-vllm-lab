@@ -55,10 +55,11 @@ This first milestone is an **offline single-GPU baseline**. The existing nano-vL
 
 ## Acceptance criteria
 
-- [ ] `torch.cuda.is_available()` is true inside the isolated WSL environment.
-- [ ] GPU reports RTX 4060.
-- [ ] Qwen3-0.6B loads successfully.
-- [ ] At least one real generation succeeds.
-- [ ] `scripts/baseline_rtx4060.py` completes without error.
-- [ ] `reports/rtx4060-qwen3-0.6b-baseline.md` is generated from the actual machine.
-- [ ] The generated report is reviewed and committed in a follow-up commit/PR.
+- [x] `torch.cuda.is_available()` is true inside the isolated WSL environment.
+- [x] GPU reports RTX 4060.
+- [x] Qwen3-0.6B loads successfully.
+- [x] At least one real generation succeeds.
+- [x] `scripts/baseline_rtx4060.py` completes without error.
+- [x] `reports/rtx4060-qwen3-0.6b-baseline.md` is generated from the actual machine.
+- [x] The generated report is reviewed and included in the milestone PR.
+
