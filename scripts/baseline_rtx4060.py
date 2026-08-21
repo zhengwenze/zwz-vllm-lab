@@ -63,7 +63,7 @@ def main() -> None:
     ]
     params = SamplingParams(temperature=0.0, max_tokens=args.max_tokens)
 
-    # Warm-up: CUDA context, kernels, model paths and caches should not dominate the measured run.
+    # Warm-up CUDA context/kernels and model execution before timing.
     llm.generate([formatted[0]], SamplingParams(temperature=0.0, max_tokens=16), use_tqdm=False)
     torch.cuda.synchronize()
     torch.cuda.reset_peak_memory_stats()
@@ -92,7 +92,7 @@ def main() -> None:
     except Exception:
         flash_attn_version = "unavailable"
 
-    report = f"""# RTX 4060 / Qwen3-0.6B Baseline\n\n"
+    report = "# RTX 4060 / Qwen3-0.6B Baseline\n\n"
     report += f"Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n"
     report += "## Environment\n\n"
     report += f"- GPU: `{gpu_name}`\n"
@@ -120,7 +120,11 @@ def main() -> None:
     report += f"- Total token throughput: `{total_tps:.2f} tokens/s`\n"
     report += f"- Peak PyTorch allocated VRAM: `{peak_vram_gib:.2f} GiB`\n\n"
     report += "## Notes\n\n"
-    report += "This is an offline single-GPU baseline. It does **not** report TTFT/TPOT because nano-vLLM's offline `generate` API does not expose per-token timestamps. Service-level latency metrics should be added in a later serving benchmark.\n"
+    report += (
+        "This is an offline single-GPU baseline. It does **not** report TTFT/TPOT because "
+        "nano-vLLM's offline `generate` API does not expose per-token timestamps. Service-level "
+        "latency metrics should be added in a later serving benchmark.\n"
+    )
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
