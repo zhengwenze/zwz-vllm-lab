@@ -29,6 +29,13 @@ def main() -> None:
     parser.add_argument("--max-tokens", type=int, default=128)
     args = parser.parse_args()
 
+    # Nano-vLLM intentionally rejects temperature=0. Use a very small positive
+    # temperature with a fixed seed as a reproducible near-greedy substitute.
+    seed = 0
+    temperature = 1e-5
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available; refusing to create an RTX 4060 GPU baseline.")
 
@@ -61,10 +68,14 @@ def main() -> None:
         )
         for prompt in prompts
     ]
-    params = SamplingParams(temperature=0.0, max_tokens=args.max_tokens)
+    params = SamplingParams(temperature=temperature, max_tokens=args.max_tokens)
 
     # Warm-up CUDA context/kernels and model execution before timing.
-    llm.generate([formatted[0]], SamplingParams(temperature=0.0, max_tokens=16), use_tqdm=False)
+    llm.generate(
+        [formatted[0]],
+        SamplingParams(temperature=temperature, max_tokens=16),
+        use_tqdm=False,
+    )
     torch.cuda.synchronize()
     torch.cuda.reset_peak_memory_stats()
 
@@ -110,7 +121,7 @@ def main() -> None:
     report += "## Workload\n\n"
     report += f"- Requests: `{len(formatted)}`\n"
     report += f"- Max output tokens/request: `{args.max_tokens}`\n"
-    report += "- Sampling: greedy (`temperature=0.0`)\n"
+    report += f"- Sampling: near-greedy (`temperature={temperature}`, seed `{seed}`)\n"
     report += "- Warm-up: 1 request / 16 max output tokens\n\n"
     report += "## Results\n\n"
     report += f"- Input tokens: `{input_tokens}`\n"
@@ -135,3 +146,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
