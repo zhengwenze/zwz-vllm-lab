@@ -39,4 +39,3 @@ echo
 echo "== NVIDIA driver =="
 nvidia-smi --query-gpu=name,driver_version,memory.total,compute_cap \
   --format=csv,noheader
-
