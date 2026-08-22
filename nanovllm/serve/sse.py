@@ -59,7 +59,7 @@ def create_app(engine: AsyncLLMEngine) -> "FastAPI":
         }
 
     @app.get("/metrics")
-    async def metrics() -> dict[str, int | bool]:
+    async def metrics() -> dict[str, object]:
         return engine.metrics_snapshot()
 
     @app.delete("/requests/{request_id}")

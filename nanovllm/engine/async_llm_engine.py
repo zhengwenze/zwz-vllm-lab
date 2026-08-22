@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, AsyncIterator, Callable
 from uuid import uuid4
 
 from nanovllm.engine.errors import EngineClosedError, RequestQueueFullError
-from nanovllm.engine.outputs import RequestOutput
+from nanovllm.engine.outputs import RequestOutput, StepStats
 from nanovllm.sampling_params import SamplingParams
 
 if TYPE_CHECKING:
@@ -113,6 +113,10 @@ class AsyncLLMEngine:
         self._finished = 0
         self._aborted = 0
         self._emitted_tokens = 0
+        self._preemptions = 0
+        self._forced_prefills = 0
+        self._allocation_blocked_steps = 0
+        self._last_step_stats: StepStats | None = None
 
     async def start(self) -> None:
         loop = asyncio.get_running_loop()
@@ -210,17 +214,39 @@ class AsyncLLMEngine:
         thread = self._thread
         return bool(thread and thread.is_alive() and self._fatal_error is None)
 
-    def metrics_snapshot(self) -> dict[str, int | bool]:
+    def metrics_snapshot(self) -> dict[str, object]:
         with self._state_lock:
+            last_step = self._last_step_stats
             return {
                 "started": self._started,
                 "closed": self._closed,
                 "worker_alive": self.is_alive,
+                "scheduler_policy": self.engine_kwargs.get(
+                    "scheduler_policy",
+                    "prefill_first",
+                ),
                 "active_requests": len(self._worker_streams),
                 "submitted_requests": self._submitted,
                 "finished_requests": self._finished,
                 "aborted_requests": self._aborted,
                 "emitted_tokens": self._emitted_tokens,
+                "preemptions": self._preemptions,
+                "forced_prefills": self._forced_prefills,
+                "allocation_blocked_steps": self._allocation_blocked_steps,
+                "last_step": None
+                if last_step is None
+                else {
+                    "step_id": last_step.step_id,
+                    "batch_kind": last_step.batch_kind,
+                    "batch_size": last_step.batch_size,
+                    "scheduled_tokens": last_step.scheduled_tokens,
+                    "waiting": last_step.waiting,
+                    "running": last_step.running,
+                    "kv_used_blocks": last_step.kv_used_blocks,
+                    "kv_total_blocks": last_step.kv_total_blocks,
+                    "decode_streak": last_step.decode_streak,
+                    "elapsed_ms": last_step.elapsed_ms,
+                },
             }
 
     def _enqueue_command(self, command: _Command) -> None:
@@ -254,6 +280,14 @@ class AsyncLLMEngine:
                     result = engine.step_stream()
                     for output in result.outputs:
                         self._publish(output)
+                    if result.stats is not None:
+                        with self._state_lock:
+                            self._last_step_stats = result.stats
+                            self._preemptions += result.stats.preemptions
+                            self._forced_prefills += int(result.stats.forced_prefill)
+                            self._allocation_blocked_steps += int(
+                                result.stats.allocation_blocked
+                            )
                     if result.stats is not None and result.stats.batch_kind == "idle" and not result.outputs:
                         with self._condition:
                             self._condition.wait(timeout=0.001)

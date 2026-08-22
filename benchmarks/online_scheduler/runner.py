@@ -71,6 +71,8 @@ class OnlineBenchmarkRunner:
         barrier_requests = tuple(
             request for request in self.trace.requests if request.arrival_anchor == "barrier"
         )
+        if barrier_requests and not start_requests:
+            raise ValueError("barrier-anchored requests require a non-empty start group")
         for request in start_requests:
             collector.register_request(request, arrival_ns=start_ns + request.arrival_offset_ns)
 

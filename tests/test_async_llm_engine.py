@@ -131,6 +131,7 @@ async def test_dynamic_streams_are_isolated_and_cuda_owner_is_one_thread():
         _collect(first),
         _collect(second),
     )
+    snapshot = engine.metrics_snapshot()
     await engine.shutdown()
 
     assert [output.request_id for output in first_outputs] == ["first", "first"]
@@ -140,6 +141,8 @@ async def test_dynamic_streams_are_isolated_and_cuda_owner_is_one_thread():
     assert len(fake.owner_threads) == 1
     assert get_ident() not in fake.owner_threads
     assert fake.exited is True
+    assert snapshot["emitted_tokens"] == 4
+    assert snapshot["last_step"]["batch_kind"] == "decode"
 
 
 @pytest.mark.asyncio
