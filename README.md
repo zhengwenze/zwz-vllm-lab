@@ -43,6 +43,43 @@ outputs = llm.generate(prompts, sampling_params)
 outputs[0]["text"]
 ```
 
+## Online Scheduler Extension
+
+This branch adds a step-level online scheduling layer on top of nano-vLLM's
+existing Paged KV Cache and chunked-prefill engine:
+
+- `prefill_first`, `decode_first`, and starvation-bounded
+  `bounded_decode_first` policies;
+- dynamic request admission, cumulative token events, cancellation, and
+  request-level backpressure;
+- a single-owner asynchronous CUDA worker and an optional FastAPI/SSE adapter;
+- replayable fixed, Poisson, and first-token-barrier interference workloads
+  with request/token/step JSONL artifacts.
+
+Install the optional serving and test dependencies:
+
+```bash
+pip install -e '.[online,test]'
+```
+
+Start the SSE service with the RTX 4060-oriented safe defaults:
+
+```bash
+nanovllm-serve \
+  --model /YOUR/MODEL/PATH \
+  --scheduler-policy bounded_decode_first \
+  --max-num-seqs 32 \
+  --max-num-batched-tokens 512 \
+  --max-model-len 2048 \
+  --gpu-memory-utilization 0.75
+```
+
+The implementation guide, API contract, WSL2 runbook, benchmark protocol, and
+honest project-ownership boundary are maintained in
+[`docs/online_scheduler`](docs/online_scheduler/DEV_DOCUMENT.md). Current CPU
+contract tests are reproducible locally; RTX 4060 performance results remain
+explicitly **GPU Pending** until raw artifacts are collected.
+
 ## Benchmark
 
 See `bench.py` for benchmark.
