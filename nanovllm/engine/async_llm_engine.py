@@ -296,7 +296,8 @@ class AsyncLLMEngine:
                     if self._commands.empty():
                         self._condition.wait()
         except BaseException as exc:
-            self._fatal_error = exc
+            with self._state_lock:
+                self._fatal_error = exc
             self._resolve_ready(exc)
             self._fail_all_streams(exc)
         finally:
@@ -304,8 +305,11 @@ class AsyncLLMEngine:
                 try:
                     engine.exit()
                 except BaseException as exc:
-                    if self._fatal_error is None:
-                        self._fatal_error = exc
+                    with self._state_lock:
+                        first_exit_error = self._fatal_error is None
+                        if first_exit_error:
+                            self._fatal_error = exc
+                    if first_exit_error:
                         self._fail_all_streams(exc)
             with self._state_lock:
                 self._closed = True
@@ -337,8 +341,13 @@ class AsyncLLMEngine:
                         command.sampling_params,
                         request_id=command.request_id,
                     )
-                    self._worker_streams[actual_id] = command.stream
+                    if actual_id != command.request_id:
+                        raise RuntimeError(
+                            f"engine returned request ID {actual_id!r}; expected "
+                            f"{command.request_id!r}"
+                        )
                     with self._state_lock:
+                        self._worker_streams[actual_id] = command.stream
                         self._submitted += 1
                     self._resolve_future(command, None, value=actual_id)
                 except BaseException as exc:
@@ -354,15 +363,14 @@ class AsyncLLMEngine:
         return should_stop, shutdown_acks
 
     def _publish(self, output: RequestOutput) -> None:
-        state = self._worker_streams.get(output.request_id)
-        if state is None:
-            return
-        if output.token_id is not None:
-            with self._state_lock:
+        with self._state_lock:
+            state = self._worker_streams.get(output.request_id)
+            if state is None:
+                return
+            if output.token_id is not None:
                 self._emitted_tokens += 1
-        if output.finished:
-            self._worker_streams.pop(output.request_id, None)
-            with self._state_lock:
+            if output.finished:
+                self._worker_streams.pop(output.request_id, None)
                 if output.finish_reason == "abort":
                     self._aborted += 1
                 else:
@@ -403,8 +411,9 @@ class AsyncLLMEngine:
             self._resolve_future(command, exc)
 
     def _fail_all_streams(self, exc: BaseException) -> None:
-        streams = list(self._worker_streams.values())
-        self._worker_streams.clear()
+        with self._state_lock:
+            streams = list(self._worker_streams.values())
+            self._worker_streams.clear()
         for state in streams:
             state.loop.call_soon_threadsafe(self._deliver_to_stream, state, exc)
 
