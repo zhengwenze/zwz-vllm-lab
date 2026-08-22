@@ -92,4 +92,3 @@ and shutdown, so it is intentionally not used for the throughput calculation.
 The next benchmark milestone should add an online serving harness and report
 TTFT, TPOT, request throughput, p50/p95 latency, and peak VRAM across controlled
 concurrency and prompt/output-length combinations.
-

@@ -96,8 +96,8 @@ nanovllm-serve \
 The implementation guide, API contract, WSL2 runbook, benchmark protocol, and
 honest project-ownership boundary are maintained in
 [`docs/online_scheduler`](docs/online_scheduler/DEV_DOCUMENT.md). Current CPU
-contract tests are reproducible locally; RTX 4060 performance results remain
-explicitly **GPU Pending** until raw artifacts are collected.
+contract tests are reproducible locally; RTX 4060 online-scheduler CUDA/SSE A/B
+results remain explicitly **GPU Pending** until raw artifacts are collected.
 
 ## Benchmark
 

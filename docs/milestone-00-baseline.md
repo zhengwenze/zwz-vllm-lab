@@ -62,4 +62,3 @@ This first milestone is an **offline single-GPU baseline**. The existing nano-vL
 - [x] `scripts/baseline_rtx4060.py` completes without error.
 - [x] `reports/rtx4060-qwen3-0.6b-baseline.md` is generated from the actual machine.
 - [x] The generated report is reviewed and included in the milestone PR.
-

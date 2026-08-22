@@ -38,4 +38,3 @@ Generated: 2026-08-21 21:35:06 (Asia/Shanghai)
 This is an offline single-GPU baseline. It does **not** report TTFT/TPOT because
 nano-vLLM's offline `generate` API does not expose per-token timestamps.
 Service-level latency metrics should be added in a later serving benchmark.
-

@@ -83,4 +83,3 @@ The smoke test was completed successfully on 2026-08-21. It loaded the real
 Qwen3-0.6B weights and executed the FlashAttention/Triton kernels on the RTX
 4060. Output quality is not treated as a correctness metric for this small
 model; successful loading and token generation are the acceptance criteria.
-
