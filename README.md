@@ -10,6 +10,25 @@
 
 A lightweight vLLM implementation built from scratch.
 
+## ZWZ vLLM Lab
+
+This repository is Zheng Wenze's learning and engineering fork of
+[GeeeekExplorer/nano-vllm](https://github.com/GeeeekExplorer/nano-vllm). The
+upstream implementation and license remain credited; this fork adds reproducible
+experiments, engineering notes, and incremental inference-system improvements.
+
+Milestone 0 reproduces Qwen3-0.6B inference on a laptop/desktop RTX 4060 8 GB in
+an isolated WSL2 Python environment:
+
+- [Reproducible WSL2 environment](docs/environment.md)
+- [RTX 4060 baseline report](docs/baseline-rtx4060.md)
+- [`scripts/collect_env.sh`](scripts/collect_env.sh) for recording the runtime
+  environment
+
+Measured baseline: **1241.94 output tokens/s** for the unmodified upstream
+`bench.py` workload (256 sequences, 133,966 generated tokens). This is an
+offline-throughput result, not an online-serving latency result.
+
 ## Key Features
 
 * 🚀 **Fast offline inference** - Comparable inference speeds to vLLM
