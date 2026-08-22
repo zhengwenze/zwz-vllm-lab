@@ -9,13 +9,18 @@ class SequenceStatus(Enum):
     WAITING = auto()
     RUNNING = auto()
     FINISHED = auto()
+    ABORTED = auto()
 
 
 class Sequence:
     block_size = 256
     counter = count()
 
-    def __init__(self, token_ids: list[int], sampling_params = SamplingParams()):
+    def __init__(self, token_ids: list[int], sampling_params: SamplingParams | None = None):
+        if not token_ids:
+            raise ValueError("token_ids must not be empty")
+        if sampling_params is None:
+            sampling_params = SamplingParams()
         self.seq_id = next(Sequence.counter)
         self.status = SequenceStatus.WAITING
         self.token_ids = copy(token_ids)
@@ -29,6 +34,8 @@ class Sequence:
         self.temperature = sampling_params.temperature
         self.max_tokens = sampling_params.max_tokens
         self.ignore_eos = sampling_params.ignore_eos
+        self.finish_reason: str | None = None
+        self.num_preemptions = 0
 
     def __len__(self):
         return self.num_tokens
@@ -38,7 +45,11 @@ class Sequence:
 
     @property
     def is_finished(self):
-        return self.status == SequenceStatus.FINISHED
+        return self.status in (SequenceStatus.FINISHED, SequenceStatus.ABORTED)
+
+    @property
+    def is_aborted(self):
+        return self.status == SequenceStatus.ABORTED
 
     @property
     def num_completion_tokens(self):
