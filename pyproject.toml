@@ -34,7 +34,8 @@ test = [
 nanovllm-serve = "nanovllm.serve.sse:main"
 
 [project.urls]
-Homepage="https://github.com/GeeeekExplorer/nano-vllm"
+Homepage = "https://github.com/zhengwenze/zwz-vllm-lab"
+Upstream = "https://github.com/GeeeekExplorer/nano-vllm"
 
 [tool.setuptools.packages.find]
 where = ["."]

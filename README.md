@@ -17,6 +17,9 @@ This repository is Zheng Wenze's learning and engineering fork of
 upstream implementation and license remain credited; this fork adds reproducible
 experiments, engineering notes, and incremental inference-system improvements.
 
+Documentation index: [`docs/README.md`](docs/README.md). Chinese project guide:
+[`README-zh.md`](README-zh.md).
+
 Milestone 0 reproduces Qwen3-0.6B inference on a laptop/desktop RTX 4060 8 GB in
 an isolated WSL2 Python environment:
 
@@ -94,8 +97,8 @@ nanovllm-serve \
 ```
 
 The implementation guide, API contract, WSL2 runbook, benchmark protocol, and
-honest project-ownership boundary are maintained in
-[`docs/online_scheduler`](docs/online_scheduler/DEV_DOCUMENT.md). Current CPU
+honest project-ownership boundary are collected in the
+[`documentation index`](docs/README.md). Current CPU
 contract tests are reproducible locally; RTX 4060 online-scheduler CUDA/SSE A/B
 results remain explicitly **GPU Pending** until raw artifacts are collected.
 
