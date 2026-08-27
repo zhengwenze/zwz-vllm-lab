@@ -40,14 +40,14 @@ Nano-vLLM 是一个结构紧凑的 vLLM 风格推理引擎。上游项目已经�
 
 ## 项目状态
 
-| 范围 | 状态 | 当前证据 |
-|---|---|---|
-| 上游离线推理核心 | `Implemented` | 源码中的 Scheduler、BlockManager、ModelRunner、Attention 等模块 |
-| Milestone 0：RTX 4060 离线基线 | `GPU Verified` | 256 sequences、133,966 输出 token、1241.94 output tokens/s |
-| 在线调度二次开发 | `Implemented` | 三种策略、动态请求、流式输出、取消、异步 worker、SSE、benchmark |
-| 纯 CPU 逻辑验证 | `CPU Verified` | `python -m pytest -q`：46 passed |
-| RTX 4060 在线 SSE 正确性冒烟 | `GPU Pending` | 尚未归档在线服务的真实 CUDA/SSE 运行产物 |
-| RTX 4060 在线三策略性能结论 | `GPU Pending` | 不预写 TTFT、TPOT、在线吞吐或显存提升数字 |
+| 范围                           | 状态           | 当前证据                                                        |
+| ------------------------------ | -------------- | --------------------------------------------------------------- |
+| 上游离线推理核心               | `Implemented`  | 源码中的 Scheduler、BlockManager、ModelRunner、Attention 等模块 |
+| Milestone 0：RTX 4060 离线基线 | `GPU Verified` | 256 sequences、133,966 输出 token、1241.94 output tokens/s      |
+| 在线调度二次开发               | `Implemented`  | 三种策略、动态请求、流式输出、取消、异步 worker、SSE、benchmark |
+| 纯 CPU 逻辑验证                | `CPU Verified` | `python -m pytest -q`：46 passed                                |
+| RTX 4060 在线 SSE 正确性冒烟   | `GPU Pending`  | 尚未归档在线服务的真实 CUDA/SSE 运行产物                        |
+| RTX 4060 在线三策略性能结论    | `GPU Pending`  | 不预写 TTFT、TPOT、在线吞吐或显存提升数字                       |
 
 这里的 `CPU Verified` 只证明调度状态机、异步隔离、API 适配、benchmark 和指标计算的无 CUDA 路径，不代表模型已经在 CPU 上完成推理，更不代表 GPU 性能已经验证。
 
@@ -130,10 +130,10 @@ ADD
 
 当前 ModelRunner 的一次调用只执行同一种 phase，因此调度器每步选择 Prefill 或 Decode，不在同一模型调用中混合两类 token。
 
-| 策略 | 选择规则 | 主要收益 | 主要风险 |
-|---|---|---|---|
-| `prefill_first` | waiting 中存在可执行请求时优先 Prefill | 保持上游兼容行为，新请求较快进入模型 | 持续到达的新请求可能拉大在途请求 TPOT/ITL |
-| `decode_first` | running 非空时优先 Decode | 保持已有请求连续吐 token | 新请求的 TTFT 可能长期恶化甚至饥饿 |
+| 策略                   | 选择规则                                     | 主要收益                                 | 主要风险                                          |
+| ---------------------- | -------------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
+| `prefill_first`        | waiting 中存在可执行请求时优先 Prefill       | 保持上游兼容行为，新请求较快进入模型     | 持续到达的新请求可能拉大在途请求 TPOT/ITL         |
+| `decode_first`         | running 非空时优先 Decode                    | 保持已有请求连续吐 token                 | 新请求的 TTFT 可能长期恶化甚至饥饿                |
 | `bounded_decode_first` | 优先 Decode；连续达到 K 步后尝试强制 Prefill | 在 TPOT 与 TTFT 之间建立可解释的有界折中 | K 需要按模型、负载和 GPU 实测，不能视作理论最优值 |
 
 在线服务默认使用：
@@ -299,15 +299,15 @@ curl -sS http://127.0.0.1:8000/metrics
 
 ### HTTP 状态码
 
-| 状态码 | 场景 |
-|---:|---|
-| `200` | 流式生成、成功取消、健康或指标查询 |
-| `404` | 取消不存在或已进入终态的请求 |
-| `409` | `request_id` 在当前 Engine 生命周期内已使用 |
-| `422` | prompt、采样参数或上下文长度非法 |
-| `429` | Scheduler 的 `waiting + running` 达到活跃请求上限 |
-| `503` | 引擎已经关闭或正在关闭 |
-| `500` | worker 初始化、CUDA 或模型执行失败 |
+| 状态码 | 场景                                              |
+| -----: | ------------------------------------------------- |
+|  `200` | 流式生成、成功取消、健康或指标查询                |
+|  `404` | 取消不存在或已进入终态的请求                      |
+|  `409` | `request_id` 在当前 Engine 生命周期内已使用       |
+|  `422` | prompt、采样参数或上下文长度非法                  |
+|  `429` | Scheduler 的 `waiting + running` 达到活跃请求上限 |
+|  `503` | 引擎已经关闭或正在关闭                            |
+|  `500` | worker 初始化、CUDA 或模型执行失败                |
 
 完整字段、错误语义和时序见 [在线 API 契约](docs/online_scheduler/NANOVLLM_ONLINE_API.md)。
 
@@ -406,15 +406,15 @@ artifacts/online_scheduler/<run_id>/
 
 ### 指标口径
 
-| 指标 | 本项目口径 |
-|---|---|
-| TTFT | 理想到达时间到第一个输出 token |
-| ITL | 相邻输出 token 的时间间隔样本 |
-| TPOT | `(finish - first_token) / (output_tokens - 1)`；少于两个输出 token 时不可计算 |
-| E2E | 理想到达时间到请求终态 |
-| 吞吐 | 墙钟区间内的 output tokens/s 与 requests/s |
-| Goodput | 配置 TTFT/TPOT SLO 后，满足 SLO 的有效请求吞吐 |
-| 调度行为 | Prefill/Decode/idle 步数、强制 Prefill、抢占、最大 Decode streak、KV 峰值等 |
+| 指标     | 本项目口径                                                                    |
+| -------- | ----------------------------------------------------------------------------- |
+| TTFT     | 理想到达时间到第一个输出 token                                                |
+| ITL      | 相邻输出 token 的时间间隔样本                                                 |
+| TPOT     | `(finish - first_token) / (output_tokens - 1)`；少于两个输出 token 时不可计算 |
+| E2E      | 理想到达时间到请求终态                                                        |
+| 吞吐     | 墙钟区间内的 output tokens/s 与 requests/s                                    |
+| Goodput  | 配置 TTFT/TPOT SLO 后，满足 SLO 的有效请求吞吐                                |
+| 调度行为 | Prefill/Decode/idle 步数、强制 Prefill、抢占、最大 Decode streak、KV 峰值等   |
 
 正式结论必须先通过请求数、终态唯一性、token 时间、输出长度、KV 不越界和 bounded 策略边界等正确性门禁，再比较性能。详细 schema 见 [在线调度实验原始数据规范](docs/online_scheduler/results/README.md)。
 
@@ -491,20 +491,20 @@ nano-vllm/
 
 ## 文档导航
 
-| 文档 | 用途 |
-|---|---|
-| [RTX 4060 离线基线](docs/baseline-rtx4060.md) | 已验证的上游 `bench.py` 环境、结果、方法和限制 |
-| [基线运行环境](docs/environment.md) | WSL2、Python、PyTorch、CUDA、Triton 与 FlashAttention 版本 |
-| [Milestone 0 说明](docs/milestone-00-baseline.md) | 离线 GPU 基线目标、验收标准和测量范围 |
-| [小负载生成报告](reports/rtx4060-qwen3-0.6b-baseline.md) | 8 请求离线 smoke workload 的机器生成结果 |
-| [在线调度器开发文档](docs/online_scheduler/DEV_DOCUMENT.md) | 架构、状态机、不变量、配置和测试矩阵 |
-| [在线 API 契约](docs/online_scheduler/NANOVLLM_ONLINE_API.md) | Python/SSE 字段、时序、状态码和错误语义 |
-| [调度器实现规范](docs/online_scheduler/NANOVLLM_SCHEDULER_STYLE.md) | 线程所有权、编码约束、异常与清理规范 |
-| [开发日志](docs/online_scheduler/DEVELOPMENT_LOG.md) | 七天实施过程、节点证据和当前门禁 |
-| [RTX 4060 实验报告](docs/online_scheduler/EXPERIMENT_REPORT_RTX4060.md) | 待真实数据填写的实验模板与结论边界 |
-| [WSL2 + RTX 4060 复现手册](docs/online_scheduler/WSL2_RTX4060_RUNBOOK.md) | 环境搭建、GPU 冒烟、正式实验和排障 |
-| [原始数据规范](docs/online_scheduler/results/README.md) | manifest、请求、token、step 和 summary schema |
-| [项目展示与面试讲解](docs/online_scheduler/PROJECT_SHOWCASE_ZH.md) | 贡献边界、核心链路、难点和演示脚本 |
+| 文档                                                                      | 用途                                                       |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [RTX 4060 离线基线](docs/baseline-rtx4060.md)                             | 已验证的上游 `bench.py` 环境、结果、方法和限制             |
+| [基线运行环境](docs/environment.md)                                       | WSL2、Python、PyTorch、CUDA、Triton 与 FlashAttention 版本 |
+| [Milestone 0 说明](docs/milestone-00-baseline.md)                         | 离线 GPU 基线目标、验收标准和测量范围                      |
+| [小负载生成报告](reports/rtx4060-qwen3-0.6b-baseline.md)                  | 8 请求离线 smoke workload 的机器生成结果                   |
+| [在线调度器开发文档](docs/online_scheduler/DEV_DOCUMENT.md)               | 架构、状态机、不变量、配置和测试矩阵                       |
+| [在线 API 契约](docs/online_scheduler/NANOVLLM_ONLINE_API.md)             | Python/SSE 字段、时序、状态码和错误语义                    |
+| [调度器实现规范](docs/online_scheduler/NANOVLLM_SCHEDULER_STYLE.md)       | 线程所有权、编码约束、异常与清理规范                       |
+| [开发日志](docs/online_scheduler/DEVELOPMENT_LOG.md)                      | 七天实施过程、节点证据和当前门禁                           |
+| [RTX 4060 实验报告](docs/online_scheduler/EXPERIMENT_REPORT_RTX4060.md)   | 待真实数据填写的实验模板与结论边界                         |
+| [WSL2 + RTX 4060 复现手册](docs/online_scheduler/WSL2_RTX4060_RUNBOOK.md) | 环境搭建、GPU 冒烟、正式实验和排障                         |
+| [原始数据规范](docs/online_scheduler/results/README.md)                   | manifest、请求、token、step 和 summary schema              |
+| [项目展示与面试讲解](docs/online_scheduler/PROJECT_SHOWCASE_ZH.md)        | 贡献边界、核心链路、难点和演示脚本                         |
 
 ## 能力边界与已知限制
 
@@ -520,14 +520,14 @@ nano-vllm/
 
 ## 上游与二次开发边界
 
-| 范围 | 归属 | 代表代码 |
-|---|---|---|
-| 模型执行、Paged KV Cache、Prefix Cache、FlashAttention、TP、CUDA Graph、基础 Chunked Prefill | 上游 Nano-vLLM | `model_runner.py`、`block_manager.py`、`attention.py` 等 |
-| 三种 Prefill/Decode 策略与 bounded 防饥饿 | 当前分支二次开发 | `scheduler.py`、`config.py` |
-| 动态请求 ID、逐 token 输出、取消与统计 | 当前分支二次开发 | `llm_engine.py`、`outputs.py`、`errors.py` |
-| 单 worker 异步引擎与背压 | 当前分支二次开发 | `async_llm_engine.py` |
-| SSE 服务和实时 JSON 指标 | 当前分支二次开发 | `serve/sse.py` |
-| 动态负载、指标与证据归档 | 当前分支二次开发 | `benchmarks/online_scheduler/` |
+| 范围                                                                                         | 归属             | 代表代码                                                 |
+| -------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------------------- |
+| 模型执行、Paged KV Cache、Prefix Cache、FlashAttention、TP、CUDA Graph、基础 Chunked Prefill | 上游 Nano-vLLM   | `model_runner.py`、`block_manager.py`、`attention.py` 等 |
+| 三种 Prefill/Decode 策略与 bounded 防饥饿                                                    | 当前分支二次开发 | `scheduler.py`、`config.py`                              |
+| 动态请求 ID、逐 token 输出、取消与统计                                                       | 当前分支二次开发 | `llm_engine.py`、`outputs.py`、`errors.py`               |
+| 单 worker 异步引擎与背压                                                                     | 当前分支二次开发 | `async_llm_engine.py`                                    |
+| SSE 服务和实时 JSON 指标                                                                     | 当前分支二次开发 | `serve/sse.py`                                           |
+| 动态负载、指标与证据归档                                                                     | 当前分支二次开发 | `benchmarks/online_scheduler/`                           |
 
 推荐的准确项目表述是：
 
