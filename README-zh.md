@@ -484,9 +484,9 @@ nano-vllm/
 ├── tests/                            # 46 项纯 CPU 契约测试
 ├── docs/
 │   ├── README.md                     # 文档总索引与证据状态说明
-│   ├── NANOVLLM_MOCK_INTERVIEW_QA.md # 推理优化模拟面试 Q&A
 │   ├── PROJECT_GAPS_AND_NEXT_STEPS_ZH.md # 项目复盘与下一步路线
-│   └── online_scheduler/             # 开发、API、实验与展示文档
+│   ├── online_scheduler/             # 开发、API、实验与展示文档
+│   └── interview/                    # 面试准备材料
 ├── reports/                          # 已归档的 RTX 4060 离线基线报告
 ├── scripts/                          # 环境采集与离线基线 runner
 ├── example.py                        # 离线推理示例
@@ -510,7 +510,7 @@ nano-vllm/
 | [WSL2 + RTX 4060 复现手册](docs/online_scheduler/WSL2_RTX4060_RUNBOOK.md) | 环境搭建、GPU 冒烟、正式实验和排障                         |
 | [原始数据规范](docs/online_scheduler/results/README.md)                   | manifest、请求、token、step 和 summary schema              |
 | [项目展示与面试讲解](docs/online_scheduler/PROJECT_SHOWCASE_ZH.md)        | 贡献边界、核心链路、难点和演示脚本                         |
-| [模拟面试 Q&A](docs/NANOVLLM_MOCK_INTERVIEW_QA.md)                        | 推理框架、KV Cache、调度、算子和多卡高频题                 |
+| [模拟面试 Q&A](docs/interview/NANOVLLM_MOCK_INTERVIEW_QA.md)              | 推理框架、KV Cache、调度、算子和多卡高频题                 |
 | [项目问题清单与下一步路线](docs/PROJECT_GAPS_AND_NEXT_STEPS_ZH.md)        | 当前证据缺口、简历收敛与后续优先级                         |
 
 ## 能力边界与已知限制

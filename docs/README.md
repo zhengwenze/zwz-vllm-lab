@@ -32,7 +32,7 @@
 | 文档 | 用途 |
 | --- | --- |
 | [项目展示与面试讲解](online_scheduler/PROJECT_SHOWCASE_ZH.md) | 贡献边界、核心链路、难点和演示脚本 |
-| [模拟面试 Q&A](NANOVLLM_MOCK_INTERVIEW_QA.md) | 推理框架、KV Cache、调度、算子和多卡高频题 |
+| [模拟面试 Q&A](interview/NANOVLLM_MOCK_INTERVIEW_QA.md) | 推理框架、KV Cache、调度、算子和多卡高频题 |
 | [项目问题清单与下一步路线](PROJECT_GAPS_AND_NEXT_STEPS_ZH.md) | 当前证据缺口、简历收敛与后续优先级 |
 
 真实性原则：离线吞吐不能替代在线 TTFT/TPOT 结论；CPU 测试数量不能替代 GPU 性能证据；上游 Nano-vLLM 能力与本仓库新增实现必须分别表述。
