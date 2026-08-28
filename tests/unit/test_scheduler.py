@@ -10,7 +10,7 @@ import pytest
 # deliberately runnable on hosts without torch, transformers, or a GPU.
 if "nanovllm" not in sys.modules:
     package = ModuleType("nanovllm")
-    package.__path__ = [str(Path(__file__).parents[1] / "nanovllm")]
+    package.__path__ = [str(Path(__file__).parents[2] / "nanovllm")]
     sys.modules["nanovllm"] = package
 
 from nanovllm.engine.scheduler import (

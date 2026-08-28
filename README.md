@@ -1,125 +1,117 @@
 <p align="center">
-<img width="300" src="assets/logo.png">
+  <img width="300" src="assets/logo.png" alt="Nano-vLLM Logo">
 </p>
 
 <p align="center">
-<a href="https://trendshift.io/repositories/15323" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15323" alt="GeeeekExplorer%2Fnano-vllm | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  <strong>轻量、可读、可验证的大模型推理引擎与在线调度实验平台</strong>
 </p>
 
-# Nano-vLLM
+<p align="center">
+  <a href="docs/README.md">文档索引</a> ｜
+  <a href="docs/online_scheduler/WSL2_RTX4060_RUNBOOK.md">RTX 4060 复现手册</a>
+</p>
 
-A lightweight vLLM implementation built from scratch.
+# Nano-vLLM：Decode 优先与防饥饿的在线调度二次开发
 
-## ZWZ vLLM Lab
+Nano-vLLM 是一个结构紧凑的 vLLM 风格推理引擎，上游已实现离线批量推理、Paged KV Cache、Prefix Cache、Chunked Prefill、Recompute 抢占、Tensor Parallel、FlashAttention 与 Decode CUDA Graph。
 
-This repository is Zheng Wenze's learning and engineering fork of
-[GeeeekExplorer/nano-vllm](https://github.com/GeeeekExplorer/nano-vllm). The
-upstream implementation and license remain credited; this fork adds reproducible
-experiments, engineering notes, and incremental inference-system improvements.
+本分支在之上完成**在线调度二次开发**：把"批量提交、全部完成后返回"扩展为支持动态请求接入、逐 token 流式输出、请求取消、背压、调度指标与可重放实验的单机在线推理原型。核心研究问题：Prefill 与 Decode 竞争同一 GPU 时，如何降低在途请求的 token 间抖动，同时避免新请求长期拿不到首 token。
 
-Documentation index: [`docs/README.md`](docs/README.md). Chinese project guide:
-[`README-zh.md`](README-zh.md).
+> [!IMPORTANT]
+> 在线调度代码已实现并通过 46 项纯 CPU 契约测试；Milestone 0 已在 RTX 4060 8GB 完成离线基线。**在线调度的 CUDA/SSE 正确性与三策略 A/B 实验仍为 GPU Pending**，不预写 TTFT/TPOT/在线吞吐等数字。
 
-Milestone 0 reproduces Qwen3-0.6B inference on a laptop/desktop RTX 4060 8 GB in
-an isolated WSL2 Python environment:
+## 项目状态
 
-- [Reproducible WSL2 environment](docs/environment.md)
-- [RTX 4060 baseline report](docs/baseline-rtx4060.md)
-- [`scripts/collect_env.sh`](scripts/collect_env.sh) for recording the runtime
-  environment
+| 范围                           | 状态           | 证据                                                   |
+| ------------------------------ | -------------- | ------------------------------------------------------ |
+| Milestone 0：RTX 4060 离线基线 | `GPU Verified` | 256 序列 / 133,966 token / **1241.94 output tokens/s** |
+| 在线调度二次开发               | `Implemented`  | 三策略、动态请求、SSE、取消、背压、benchmark           |
+| 纯 CPU 逻辑验证                | `CPU Verified` | `pytest`：46 passed                                    |
+| RTX 4060 在线 SSE / 三策略性能 | `GPU Pending`  | 尚未归档真实运行产物                                   |
 
-Measured baseline: **1241.94 output tokens/s** for the unmodified upstream
-`bench.py` workload (256 sequences, 133,966 generated tokens). This is an
-offline-throughput result, not an online-serving latency result.
+## 核心能力（当前分支新增）
 
-## Key Features
+- `prefill_first` / `decode_first` / `bounded_decode_first` 三种策略，用 `max_consecutive_decode_steps` 建立 TTFT↔TPOT 的有界折中；
+- 外部稳定 `request_id`、逐 token 累计事件、`stop/length/abort` 三种终态、step 边界安全取消并释放 KV Block；
+- `AsyncLLMEngine` 单 CUDA worker 独占，Scheduler 活跃请求背压与慢消费者保护；
+- FastAPI/SSE 生成、取消、健康检查与 JSON 指标；fixed/Poisson/混合/干扰负载；
+- 逐请求、逐 token、逐 step 的 JSON/JSONL 原始产物与 GPU 遥测，TTFT/TPOT/ITL/E2E/吞吐/Goodput 汇总。
 
-* 🚀 **Fast offline inference** - Comparable inference speeds to vLLM
-* 📖 **Readable codebase** - Clean implementation in ~ 1,200 lines of Python code
-* ⚡ **Optimization Suite** - Prefix caching, Tensor Parallelism, Torch compilation, CUDA graph, etc.
+## 安装与环境
 
-## Installation
+支持 Linux；Windows 推荐 WSL2 Ubuntu 22.04，Python `>=3.10,<3.13`，NVIDIA CUDA GPU，推荐起步模型 Qwen3-0.6B。
 
 ```bash
-pip install git+https://github.com/GeeeekExplorer/nano-vllm.git
+python3.11 -m venv .venv && source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+# 先按本机驱动/CUDA 选择匹配的 PyTorch wheel，再安装项目
+python -m pip install -e '.[online,test]'
 ```
 
-## Model Download
+下载模型：
 
-To download the model weights manually, use the following command:
 ```bash
 huggingface-cli download --resume-download Qwen/Qwen3-0.6B \
-  --local-dir ~/huggingface/Qwen3-0.6B/ \
-  --local-dir-use-symlinks False
+  --local-dir /YOUR/MODEL/PATH --local-dir-use-symlinks False
 ```
 
-## Quick Start
+## 快速开始
 
-See `example.py` for usage. The API mirrors vLLM's interface with minor differences in the `LLM.generate` method:
+离线推理（与上游 `LLM.generate` 兼容）：
+
 ```python
 from nanovllm import LLM, SamplingParams
 llm = LLM("/YOUR/MODEL/PATH", enforce_eager=True, tensor_parallel_size=1)
-sampling_params = SamplingParams(temperature=0.6, max_tokens=256)
-prompts = ["Hello, Nano-vLLM."]
-outputs = llm.generate(prompts, sampling_params)
-outputs[0]["text"]
+outputs = llm.generate(["Hello, Nano-vLLM."],
+                        SamplingParams(temperature=0.6, max_tokens=128))
+print(outputs[0]["text"])
 ```
 
-## Online Scheduler Extension
-
-This branch adds a step-level online scheduling layer on top of nano-vLLM's
-existing Paged KV Cache and chunked-prefill engine:
-
-- `prefill_first`, `decode_first`, and starvation-bounded
-  `bounded_decode_first` policies;
-- dynamic request admission, cumulative token events, cancellation, and
-  request-level backpressure;
-- a single-owner asynchronous CUDA worker and an optional FastAPI/SSE adapter;
-- replayable fixed, Poisson, and first-token-barrier interference workloads
-  with request/token/step JSONL artifacts.
-
-Install the optional serving and test dependencies:
+启动在线 SSE 服务（RTX 4060 保守配置）：
 
 ```bash
-pip install -e '.[online,test]'
+nanovllm-serve --model /YOUR/MODEL/PATH \
+  --scheduler-policy bounded_decode_first --max-consecutive-decode-steps 8 \
+  --max-num-seqs 32 --max-num-batched-tokens 512 --max-model-len 2048 \
+  --gpu-memory-utilization 0.75 --enforce-eager
 ```
 
-Start the SSE service with the RTX 4060-oriented safe defaults:
+流式生成 / 取消 / 健康与指标：
 
 ```bash
-nanovllm-serve \
-  --model /YOUR/MODEL/PATH \
-  --scheduler-policy bounded_decode_first \
-  --max-num-seqs 32 \
-  --max-num-batched-tokens 512 \
-  --max-model-len 2048 \
-  --gpu-memory-utilization 0.75
+curl -N -X POST http://127.0.0.1:8000/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"request_id":"demo-001","prompt":"用一句话解释 PagedAttention","max_tokens":64}'
+curl -X DELETE http://127.0.0.1:8000/requests/demo-001
+curl -sS http://127.0.0.1:8000/health
+curl -sS http://127.0.0.1:8000/metrics
 ```
 
-The implementation guide, API contract, WSL2 runbook, benchmark protocol, and
-honest project-ownership boundary are collected in the
-[`documentation index`](docs/README.md). Current CPU
-contract tests are reproducible locally; RTX 4060 online-scheduler CUDA/SSE A/B
-results remain explicitly **GPU Pending** until raw artifacts are collected.
+## 可复现实验
 
-## Benchmark
+在线策略比较使用 `benchmarks/online_scheduler/`（离线 `bench.py` 仅作吞吐基线），比较三策略时保持模型、commit、seed、请求 trace 与重复次数一致：
 
-See `bench.py` for benchmark.
+```bash
+python -m benchmarks.online_scheduler.cli \
+  --model /YOUR/MODEL/PATH --policy bounded_decode_first \
+  --max-consecutive-decode-steps 8 --workload mixed \
+  --arrival poisson --repeat-index 0 --output-root artifacts/online_scheduler
+```
 
-**Test Configuration:**
-- Hardware: RTX 4070 Laptop (8GB)
-- Model: Qwen3-0.6B
-- Total Requests: 256 sequences
-- Input Length: Randomly sampled between 100–1024 tokens
-- Output Length: Randomly sampled between 100–1024 tokens
+每次运行生成独立目录：`workload.jsonl`（可重放 trace）、`manifest.json`、`requests/tokens/steps.jsonl`、`gpu_telemetry.csv`、`summary.json`。指标口径 TTFT/ITL/TPOT/E2E/吞吐/Goodput 定义见 [原始数据规范](docs/online_scheduler/results/README.md)。
 
-**Performance Results:**
-| Inference Engine | Output Tokens | Time (s) | Throughput (tokens/s) |
-|----------------|-------------|----------|-----------------------|
-| vLLM           | 133,966     | 98.37    | 1361.84               |
-| Nano-vLLM      | 133,966     | 93.41    | 1434.13               |
+## 文档导航
 
+- [完整文档索引](docs/README.md)｜[在线调度开发文档](docs/online_scheduler/DEV_DOCUMENT.md)｜[在线 API 契约](docs/online_scheduler/NANOVLLM_ONLINE_API.md)
+- [WSL2 + RTX 4060 复现手册](docs/online_scheduler/WSL2_RTX4060_RUNBOOK.md)｜[RTX 4060 离线基线](docs/baseline-rtx4060.md)
+- [项目复盘与下一步](docs/PROJECT_GAPS_AND_NEXT_STEPS_ZH.md)｜[模拟面试 Q&A](docs/interview/NANOVLLM_MOCK_INTERVIEW_QA.md)
 
-## Star History
+## 能力边界与二次开发归属
 
-[![Star History Chart](https://api.star-history.com/svg?repos=GeeeekExplorer/nano-vllm&type=Date)](https://www.star-history.com/#GeeeekExplorer/nano-vllm&Date)
+当前为单机、单模型进程的实验型在线服务；HTTP 层无鉴权/TLS/配额，默认只绑定 `127.0.0.1`；调度为 step-level phase，不混合 Prefill 与 Decode；`bounded_decode_first` 只限定在可执行 waiting 请求存在时的连续 Decode 步数，不承诺绝对 SLO。
+
+推荐的准确表述：基于上游已有的 Paged KV Cache、Chunked Prefill 与模型执行链路，完成在线调度二次开发——引入 Decode First 与 Bounded Decode First，以单 CUDA worker 支持动态接入、逐 token SSE、取消与背压，并以逐请求/逐 token/逐 step 原始产物构建 TTFT、TPOT 与吞吐 A/B 实验链路。**不应表述为"从零实现完整 Nano-vLLM"，也不应在 GPU 数据缺失时声称具体加速百分比。**
+
+## License
+
+[MIT License](LICENSE)，致谢 [GeeeekExplorer/nano-vllm](https://github.com/GeeeekExplorer/nano-vllm)。

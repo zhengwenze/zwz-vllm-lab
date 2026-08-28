@@ -1,5 +1,7 @@
 # Nano-vLLM RTX 4060 在线调度 GPU 实验报告
 
+> 2026-08-28 已升级为 **3 策略 × 5 次独立重复**（15 runs，轮换顺序 + mean/std/CV 聚合），请以 [nanovllm-online-rtx4060-20260828.md](./nanovllm-online-rtx4060-20260828.md) 为终版结论来源；本文件为单轮首测的历史证据。
+
 实验日期：2026-08-27（Asia/Shanghai）  
 证据状态：**GPU Verified（单轮首测）**  
 Git commit：`73b9118838af8ef17d1587de8bd3cca037d50263`
@@ -96,9 +98,9 @@ CPU/契约门禁结果为 `46 passed`，`compileall` 和 `git diff --check` 均�
 
 原始证据位于：
 
-- `artifacts/gpu_validation_20260827/bootstrap/`
-- `artifacts/online_scheduler/20260827T151006.462573Z-prefill_first-poisson-mixed/`
-- `artifacts/online_scheduler/20260827T151059.920426Z-decode_first-poisson-mixed/`
-- `artifacts/online_scheduler/20260827T151530.490539Z-bounded_decode_first-poisson-mixed/`
+- `artifacts/validation/20260827/bootstrap/`
+- `artifacts/online_scheduler/experiments/20260827-initial/20260827T151006.462573Z-prefill_first-poisson-mixed/`
+- `artifacts/online_scheduler/experiments/20260827-initial/20260827T151059.920426Z-decode_first-poisson-mixed/`
+- `artifacts/online_scheduler/experiments/20260827-initial/20260827T151530.490539Z-bounded_decode_first-poisson-mixed/`
 
 每个正式 run 均包含 `manifest.json`、`workload.jsonl`、`requests.jsonl`、`tokens.jsonl`、`steps.jsonl`、`gpu_telemetry.csv`、`summary.json`、`stdout.log` 和 `checksums.sha256`。

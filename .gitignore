@@ -38,4 +38,5 @@ coverage.xml
 *.swp
 
 # Project-local generated artifacts
-artifacts/
+artifacts/*
+!artifacts/README.md

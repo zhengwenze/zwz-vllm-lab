@@ -36,7 +36,7 @@
 
 **验收**：自生成 ID 唯一；engine 生命周期内曾用 ID 拒绝复用；stop/length/abort 每个请求恰好一个终态；最终 KV Block 释放。
 
-**证据**：`tests/test_llm_engine_online.py`；总门禁 `46 passed`。
+**证据**：`tests/unit/test_llm_engine_online.py`；总门禁 `46 passed`。
 
 **状态**：`Implemented / CPU Verified`。
 
@@ -53,7 +53,7 @@
 
 **验收**：策略顺序与契约一致；bounded 在 waiting 可执行时不越界；KV 阻塞不死循环；策略切换不破坏上游离线行为。
 
-**证据**：`tests/test_scheduler.py` 覆盖三策略、上限、KV 阻塞、抢占、取消和队列容量。
+**证据**：`tests/unit/test_scheduler.py` 覆盖三策略、上限、KV 阻塞、抢占、取消和队列容量。
 
 **状态**：`Implemented / CPU Verified`。
 
@@ -71,7 +71,7 @@
 
 **验收**：并发 submit 无重复/丢失；满队列明确背压；abort 最迟在下个 step 边界生效；测试结束无残留线程。
 
-**证据**：`tests/test_async_llm_engine.py` 覆盖 stream 隔离、单 owner 线程、跨线程异常、abort 和幂等 shutdown。
+**证据**：`tests/unit/test_async_llm_engine.py` 覆盖 stream 隔离、单 owner 线程、跨线程异常、abort 和幂等 shutdown。
 
 **状态**：`Implemented / CPU Verified`。
 
