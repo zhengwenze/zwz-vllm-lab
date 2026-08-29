@@ -1,6 +1,6 @@
 # Nano-vLLM Online API 契约
 
-> **状态标签**：`Implemented`（同步/异步/SSE 契约） · `CPU Verified`（46 tests passed） · `GPU Pending`
+> **状态标签**：`Implemented`（同步/异步/SSE 契约） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 15-run；[证据](../../reports/nanovllm-online-rtx4060-20260828.md)）
 >
 > **契约版本**：v0.1　|　**基线**：`bb823b3`　|　**实现位置**：当前工作树
 
@@ -144,7 +144,7 @@ async for event in engine.generate(
 
 ## 4. HTTP/SSE 约定
 
-示例基础地址：`http://127.0.0.1:8000`。服务入口为 `nanovllm-serve` 或 `python -m nanovllm.serve.sse`；真实 CUDA 端到端仍为 GPU Pending。
+示例基础地址：`http://127.0.0.1:8000`。服务入口为 `nanovllm-serve` 或 `python -m nanovllm.serve.sse`；真实 CUDA/SSE 已在 RTX 4060 正式实验中端到端验证。
 
 ### 4.1 端点清单
 

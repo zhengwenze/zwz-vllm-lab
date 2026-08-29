@@ -1,6 +1,6 @@
 # WSL2 + RTX 4060 复现实验手册
 
-> **状态标签**：`Implemented`（操作手册与 benchmark CLI） · `CPU Verified`（46 tests passed） · `GPU Pending`
+> **状态标签**：`Implemented`（操作手册与 benchmark CLI） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 15-run；[证据](../../reports/nanovllm-online-rtx4060-20260828.md)）
 >
 > **目标**：在 Windows + WSL2 的 RTX 4060 环境复现 Nano-vLLM 在线调度实验，并留下完整原始证据。
 

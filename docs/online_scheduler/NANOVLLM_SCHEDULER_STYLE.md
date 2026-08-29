@@ -1,6 +1,6 @@
 # Nano-vLLM 在线调度器实现规范
 
-> **状态标签**：`Implemented`（在线实现规范） · `CPU Verified`（46 tests passed） · `GPU Pending`
+> **状态标签**：`Implemented`（在线实现规范） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 15-run）
 >
 > **适用范围**：在线调度扩展代码、测试与文档　|　**基线**：`bb823b3`
 
@@ -193,4 +193,4 @@ python -m pytest -q
 git diff --check
 ```
 
-当前工作树执行 `python -m pytest -q` 得到 `46 passed`，Ruff、`compileall` 与 `git diff --check` 也通过；GPU 仍报告 `NOT RUN / GPU Pending`。开发主机 Python 3.13 只用于纯 CPU 测试，正式运行遵守项目 `>=3.10,<3.13` 并使用 Python 3.11。文档 Agent 不负责 Git 提交，交付前只报告文件和待同步点。
+CPU 验证执行 `python -m pytest -q` 得到 `46 passed`，Ruff、`compileall` 与 `git diff --check` 通过；GPU 已在 Python 3.12 / RTX 4060 上完成 15-run 正式实验。开发主机 Python 3.13 只用于纯 CPU 测试，正式运行遵守项目 `>=3.10,<3.13`。

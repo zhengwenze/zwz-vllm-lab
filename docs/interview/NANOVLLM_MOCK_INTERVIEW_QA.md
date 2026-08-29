@@ -4,6 +4,8 @@
 >
 > 文档基线：上游基线 `bb823b3` + 当前在线调度二次开发分支。整理日期：2026-08-22。
 
+> 2026-08-28 更新：在线 GPU 实验已完成，面试数字以[15-run 正式报告](../../reports/nanovllm-online-rtx4060-20260828.md)为准；下文原 GPU Pending 口径已同步更新。
+
 ## 0. 使用说明与事实边界
 
 这不是一份只背结论的“八股题库”。每道重点题都按下面四层准备：
@@ -36,7 +38,7 @@
 - fixed、Poisson 和 first-token barrier 在线负载及原始产物归档；
 - 46 项纯 CPU 契约测试。
 
-Milestone 0 已在 RTX 4060 上完成上游离线 `bench.py` 基线；在线调度的 CUDA/SSE 正确性和 TTFT/TPOT A/B 仍为 GPU Pending。不能把上游已有机制说成“我从零实现”，也不能把离线吞吐写成在线优化结果。安全表达是：
+Milestone 0 已在 RTX 4060 上完成上游离线 `bench.py` 基线；在线调度的 CUDA/SSE 正确性和 TTFT/TPOT A/B 已完成三策略 × 5 次重复并公开证据。不能把上游已有机制说成“我从零实现”，也不能把离线吞吐写成在线优化结果。安全表达是：
 
 > 我先读懂 Nano-vLLM 上游的 Scheduler、Sequence、BlockManager 和 ModelRunner 链路，再完成在线调度二次开发：新增 Decode First 与 Bounded Decode First、动态请求、逐 token 流、取消、背压和 SSE，并用 46 项纯 CPU 测试验证状态机和资源回收。RTX 4060 离线基线已经完成，但在线三策略 A/B 仍等待原始 GPU 数据，所以我不声明具体在线性能提升。
 
@@ -59,7 +61,7 @@ Milestone 0 已在 RTX 4060 上完成上游离线 `bench.py` 基线；在线调�
 
 **参考回答：**
 
-> 面试官您好，我目前主要学习大模型推理部署和推理框架优化。为了理解 vLLM 的核心链路，我选择了代码规模较小但结构完整的 Nano-vLLM，先分析请求从 `LLMEngine` 进入 `Scheduler`，经过 Paged KV Cache、Prefill/Decode、Attention 和采样，再回到调度器更新状态的全过程。在此基础上，我完成了面向在线请求的调度二次开发：增加 Decode First 和 Bounded Decode First，通过单 CUDA worker 支持动态请求、逐 token 输出、取消、背压和 SSE，并记录逐请求、逐 token、逐 step 的实验数据。当前 46 项纯 CPU 契约测试已经通过，RTX 4060 离线基线已经完成；在线 TTFT、TPOT 和吞吐 A/B 仍是 GPU Pending，所以我不会提前声称加速百分比。我希望在推理框架岗位继续加强 CUDA Profiling、算子和多卡能力。
+> 面试官您好，我目前主要学习大模型推理部署和推理框架优化。为了理解 vLLM 的核心链路，我选择了代码规模较小但结构完整的 Nano-vLLM，先分析请求从 `LLMEngine` 进入 `Scheduler`，经过 Paged KV Cache、Prefill/Decode、Attention 和采样，再回到调度器更新状态的全过程。在此基础上，我完成了面向在线请求的调度二次开发：增加 Decode First 和 Bounded Decode First，通过单 CUDA worker 支持动态请求、逐 token 输出、取消、背压和 SSE，并记录逐请求、逐 token、逐 step 的实验数据。46 项纯 CPU 契约测试已经通过；RTX 4060 上三策略各 5 次重复显示，在固定 workload 下 Bounded(K=8) 相对严格 Decode First 将 TTFT P50 从 108.9 s 降至 4.58 s、输出吞吐从 50.8 提升至 446.6 tok/s。该结论只对应公开证据包中的模型和负载。我希望在推理框架岗位继续加强 CUDA Profiling、算子和多卡能力。
 
 **继续追问：**
 

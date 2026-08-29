@@ -1,8 +1,8 @@
-# Nano-vLLM 在线调度 RTX 4060 实验报告
+# Nano-vLLM 在线调度 RTX 4060 实验报告模板（历史）
 
-> **状态标签**：`Implemented`（benchmark 与实验协议） · `CPU Verified`（46 tests passed） · `GPU Pending`
+> **状态标签**：历史模板。正式实验已为 `GPU Verified`，请阅读[15-run 最终报告](../../reports/nanovllm-online-rtx4060-20260828.md)。
 >
-> **重要**：本报告当前没有 RTX 4060 实测结果。所有 GPU 指标栏保持空白，禁止从上游 README 或其他显卡复制数字。
+> **重要**：本文保留实验前模板，不再代表当前项目状态。正式数字只能引用最终报告及其公开原始证据包。
 
 ## 1. 实验问题
 
@@ -20,9 +20,9 @@
 | 实验协议 | `Implemented` | 本文 |
 | 原始数据 schema | `Implemented` | `results/README.md` |
 | CPU 契约测试 | `CPU Verified` | `46 passed`；Ruff/compileall/diff-check 通过 |
-| RTX 4060 环境探测 | `GPU Pending` | 待生成 `manifest.json` |
-| 策略 A/B 原始数据 | `GPU Pending` | 待生成 JSONL |
-| 性能结论 | `GPU Pending` | 正确性门禁通过后填写 |
+| RTX 4060 环境探测 | `GPU Verified` | 15 个 `manifest.public.json` |
+| 策略 A/B 原始数据 | `GPU Verified` | 15-run 脱敏 JSONL/CSV 证据包 |
+| 性能结论 | `GPU Verified` | 5-repeat 聚合报告 |
 
 ## 3. 固定环境
 
@@ -219,7 +219,7 @@ python -m benchmarks.online_scheduler.cli \
 
 在结果有效前不要删除以下占位提示：
 
-> `GPU Pending`：尚未在本机 RTX 4060 完成固定负载重复实验，因此不能声称某策略提升吞吐、降低 TTFT/TPOT 或节省显存。
+> 历史模板验收状态：固定负载重复实验已于 2026-08-28 完成；具体结论和限制见最终报告。
 
 实测后按以下格式写：
 

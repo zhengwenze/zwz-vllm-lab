@@ -1,8 +1,8 @@
 # 在线调度实验原始数据规范
 
-> **状态标签**：`Implemented`（benchmark artifacts） · `CPU Verified`（46 tests passed） · `GPU Pending`（暂无 RTX 4060 原始数据）
+> **状态标签**：`Implemented`（benchmark artifacts） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 三策略 × 5 次重复；[公开证据包](../../results/online-scheduler-rtx4060-20260828/README.md)）
 
-当前 benchmark 默认把真实运行产物写到 `artifacts/online_scheduler/<run_id>/`。本目录只保存 schema 与证据规则，不伪造 GPU 结果。
+benchmark 默认把真实运行产物写到 `artifacts/online_scheduler/<run_id>/`。2026-08-28 的 15-run 正式实验已将脱敏、压缩后的完整事件流与校验哈希发布到 `docs/results/online-scheduler-rtx4060-20260828/`；本页继续定义通用 schema 与证据规则。
 
 ## 1. 实际目录结构
 

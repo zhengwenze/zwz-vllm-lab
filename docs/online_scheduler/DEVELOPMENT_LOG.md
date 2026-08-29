@@ -1,6 +1,6 @@
 # Nano-vLLM 在线调度器 7 天开发记录
 
-> **状态标签**：`Implemented`（Day 1～6） · `CPU Verified`（46 tests passed） · `GPU Pending`（Day 7）
+> **状态标签**：历史开发日志（Day 1～7）。当前状态已更新为 `GPU Verified`；正式结果见[15-run 报告](../../reports/nanovllm-online-rtx4060-20260828.md)。下文的 GPU Pending 条目保留为当时的时间线记录。
 >
 > **基线**：`bb823b3`　|　记录原则：每天都有输入、输出、验收和证据；未完成项不回填成完成。
 

@@ -127,7 +127,8 @@ Git commit：`73b9118838af8ef17d1587de8bd3cca037d50263`（与单轮首测一致�
 
 ## 8. 原始证据
 
-- 聚合 JSON：`artifacts/online_scheduler/experiments/20260828-ablation/aggregate.json`
-- 15 个正式 run：`artifacts/online_scheduler/experiments/20260828-ablation/<run_id>/`
+- 公开聚合 JSON：[`docs/results/online-scheduler-rtx4060-20260828/aggregate.json`](../docs/results/online-scheduler-rtx4060-20260828/aggregate.json)
+- 15 个正式 run 的脱敏原始事件与遥测：[`docs/results/online-scheduler-rtx4060-20260828/runs/`](../docs/results/online-scheduler-rtx4060-20260828/runs/)
+- 原始文件哈希与公开文件校验：[`source-sha256.json`](../docs/results/online-scheduler-rtx4060-20260828/source-sha256.json) / [`checksums.sha256`](../docs/results/online-scheduler-rtx4060-20260828/checksums.sha256)
 - 生成方式：`python -m benchmarks.online_scheduler.aggregate_repeats --artifacts-root artifacts/online_scheduler/experiments/20260828-ablation --output-json artifacts/online_scheduler/experiments/20260828-ablation/aggregate.json`
 - 复现脚本：`scripts/run_scheduler_rtx4060_repeats.sh`

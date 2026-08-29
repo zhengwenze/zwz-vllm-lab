@@ -1,0 +1,65 @@
+{
+  "benchmark": {
+    "barrier_ns": null,
+    "orchestration_start_ns": 479747382440,
+    "runner_finish_ns": 715171060937,
+    "runner_start_ns": 479747398040,
+    "wall_ms": 235423.662897
+  },
+  "created_utc": "2026-08-27T19:03:01.752968+00:00",
+  "engine_config": {
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.75,
+    "max_consecutive_decode_steps": 8,
+    "max_model_len": 2048,
+    "max_num_batched_tokens": 512,
+    "max_num_seqs": 32,
+    "max_queue_size": 512,
+    "scheduler_policy": "decode_first",
+    "tensor_parallel_size": 1
+  },
+  "git_commit": "73b9118838af8ef17d1587de8bd3cca037d50263",
+  "git_dirty": true,
+  "git_status_porcelain": "?? benchmarks/online_scheduler/aggregate_repeats.py\n?? scripts/run_scheduler_rtx4060_repeats.sh\n?? tests/test_aggregate_repeats.py",
+  "kv_cache": {
+    "block_size_tokens": 256,
+    "num_blocks": 134,
+    "token_capacity": 34304
+  },
+  "model": "/home/<user>/huggingface/Qwen3-0.6B",
+  "nvidia_smi": "NVIDIA GeForce RTX 4060, GPU-[REDACTED], 560.94, 8188, 115.00",
+  "pid": 1243,
+  "policy": "decode_first",
+  "policy_params": {
+    "max_consecutive_decode_steps": 8
+  },
+  "repeat_index": 0,
+  "run_id": "20260827T190253.335716Z-decode_first-poisson-mixed",
+  "software": {
+    "cuda": "12.6",
+    "flash_attn": "2.8.3",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.12.14 (main, Aug 14 2026, 15:34:45) [Clang 22.1.3 ]",
+    "torch": "2.7.1+cu126",
+    "transformers": "4.57.1",
+    "triton": "3.3.1"
+  },
+  "telemetry": {
+    "enabled": true,
+    "error": null,
+    "interval_seconds": 0.2,
+    "samples": 1006
+  },
+  "warmup": {
+    "completed": true,
+    "output_tokens": 16,
+    "prompt_tokens": 128
+  },
+  "workload": {
+    "interval_ms": null,
+    "name": "poisson-mixed",
+    "num_requests": 100,
+    "request_rate": 8.0,
+    "seed": 20260827
+  }
+}

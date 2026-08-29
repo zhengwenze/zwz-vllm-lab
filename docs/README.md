@@ -5,7 +5,9 @@
 - **Implemented**：代码已经实现，但不等于已经完成目标硬件验证；
 - **CPU Verified**：已通过不依赖 CUDA 的契约测试；
 - **GPU Verified**：已有固定环境、工作负载和原始结果支持；
-- **GPU Pending**：尚未获得目标 RTX 4060 的真实在线实验数据。
+- **GPU Pending**：目标 GPU 证据尚未获得时使用的状态；本项目 2026-08-28 在线 15-run 实验现为 **GPU Verified**。
+
+当前在线 GPU 证据入口：[15-run 报告](../reports/nanovllm-online-rtx4060-20260828.md)｜[脱敏原始证据包](results/online-scheduler-rtx4060-20260828/README.md)。
 
 ## 环境与离线基线
 

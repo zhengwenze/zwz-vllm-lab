@@ -1,0 +1,430 @@
+{
+  "artifacts_root": "artifacts/online_scheduler/experiments/20260828-ablation",
+  "policies": {
+    "bounded_decode_first": {
+      "metrics": {
+        "e2e_p50_ms": {
+          "count": 5,
+          "cv": 0.048794870777954746,
+          "maximum": 9770.8758325,
+          "mean": 9330.8443135,
+          "minimum": 8635.2221505,
+          "std": 455.29734252644636
+        },
+        "e2e_p95_ms": {
+          "count": 5,
+          "cv": 0.0507939953784316,
+          "maximum": 17150.8953012,
+          "mean": 16395.754910120002,
+          "minimum": 15021.88846235,
+          "std": 832.8058991305326
+        },
+        "forced_prefill_steps": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 73.0,
+          "mean": 73.0,
+          "minimum": 73.0,
+          "std": 0.0
+        },
+        "gpu_memory_peak_mib": {
+          "count": 5,
+          "cv": 0.015261622735874279,
+          "maximum": 6463.0,
+          "mean": 6338.8,
+          "minimum": 6202.0,
+          "std": 96.74037419815988
+        },
+        "gpu_utilization_mean": {
+          "count": 5,
+          "cv": 0.04716368875039073,
+          "maximum": 37.84166666666667,
+          "mean": 36.74157637602938,
+          "minimum": 33.69642857142857,
+          "std": 1.7328682723977586
+        },
+        "gpu_utilization_peak": {
+          "count": 5,
+          "cv": 0.028468132773810696,
+          "maximum": 47.0,
+          "mean": 45.8,
+          "minimum": 44.0,
+          "std": 1.3038404810405297
+        },
+        "itl_p95_ms": {
+          "count": 5,
+          "cv": 0.028182403865495285,
+          "maximum": 72.722894,
+          "mean": 71.09564159,
+          "minimum": 67.642741,
+          "std": 2.0036460843658834
+        },
+        "max_running_requests": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 28.0,
+          "mean": 28.0,
+          "minimum": 28.0,
+          "std": 0.0
+        },
+        "max_waiting_requests": {
+          "count": 5,
+          "cv": 0.017358091836806547,
+          "maximum": 49.0,
+          "mean": 48.2,
+          "minimum": 47.0,
+          "std": 0.8366600265340756
+        },
+        "output_tokens_per_second": {
+          "count": 5,
+          "cv": 0.03273427343906569,
+          "maximum": 470.9713474886518,
+          "mean": 446.60362469978975,
+          "minimum": 433.54773033751934,
+          "std": 14.619245169800788
+        },
+        "peak_kv_block_utilization": {
+          "count": 5,
+          "cv": 0.010448915782709251,
+          "maximum": 0.3208955223880597,
+          "mean": 0.31940298507462683,
+          "minimum": 0.31343283582089554,
+          "std": 0.003337414891790716
+        },
+        "requests_per_second": {
+          "count": 5,
+          "cv": 0.03273427343906571,
+          "maximum": 3.8327746377657212,
+          "mean": 3.6344696020490703,
+          "minimum": 3.5282204617311144,
+          "std": 0.1189717217594466
+        },
+        "tpot_p50_ms": {
+          "count": 5,
+          "cv": 0.03009991826807922,
+          "maximum": 40.0784094448819,
+          "mean": 38.87124508270216,
+          "minimum": 37.02650050012498,
+          "std": 1.1700212999678112
+        },
+        "tpot_p95_ms": {
+          "count": 5,
+          "cv": 0.03521499145791408,
+          "maximum": 41.65410173587677,
+          "mean": 40.515471755446825,
+          "minimum": 38.136635614979376,
+          "std": 1.4267519917814193
+        },
+        "ttft_p50_ms": {
+          "count": 5,
+          "cv": 0.0706193871674654,
+          "maximum": 4833.449689,
+          "mean": 4579.7130433,
+          "minimum": 4043.5017080000002,
+          "std": 323.41652852069393
+        },
+        "ttft_p95_ms": {
+          "count": 5,
+          "cv": 0.051282368601497035,
+          "maximum": 12627.736197700002,
+          "mean": 12000.98142767,
+          "minimum": 11000.555820149999,
+          "std": 615.438753153493
+        }
+      },
+      "repeat_count": 5,
+      "run_ids": [
+        "20260827T190658.699706Z-bounded_decode_first-poisson-mixed",
+        "20260827T191140.795971Z-bounded_decode_first-poisson-mixed",
+        "20260827T191252.123456Z-bounded_decode_first-poisson-mixed",
+        "20260827T192301.671793Z-bounded_decode_first-poisson-mixed",
+        "20260827T192757.189777Z-bounded_decode_first-poisson-mixed"
+      ]
+    },
+    "decode_first": {
+      "metrics": {
+        "e2e_p50_ms": {
+          "count": 5,
+          "cv": 0.05236140632940359,
+          "maximum": 120906.521398,
+          "mean": 112642.2107724,
+          "minimum": 105134.931671,
+          "std": 5898.104568095958
+        },
+        "e2e_p95_ms": {
+          "count": 5,
+          "cv": 0.027472011536977172,
+          "maximum": 226699.5639396,
+          "mean": 220403.60988211998,
+          "minimum": 213710.5460996,
+          "std": 6054.930513473016
+        },
+        "forced_prefill_steps": {
+          "count": 5,
+          "cv": null,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "std": 0.0
+        },
+        "gpu_memory_peak_mib": {
+          "count": 5,
+          "cv": 0.020134234459258223,
+          "maximum": 6570.0,
+          "mean": 6391.0,
+          "minimum": 6244.0,
+          "std": 128.6778924291193
+        },
+        "gpu_utilization_mean": {
+          "count": 5,
+          "cv": 0.0746961268669663,
+          "maximum": 29.29951690821256,
+          "mean": 27.669550745986943,
+          "minimum": 24.507952286282308,
+          "std": 2.0668082728742028
+        },
+        "gpu_utilization_peak": {
+          "count": 5,
+          "cv": 0.053114786599924836,
+          "maximum": 51.0,
+          "mean": 48.0,
+          "minimum": 44.0,
+          "std": 2.5495097567963922
+        },
+        "itl_p95_ms": {
+          "count": 5,
+          "cv": 0.03336264146445215,
+          "maximum": 40.053058349999986,
+          "mean": 38.07776033,
+          "minimum": 36.87016765,
+          "std": 1.270374665659129
+        },
+        "max_running_requests": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 4.0,
+          "mean": 4.0,
+          "minimum": 4.0,
+          "std": 0.0
+        },
+        "max_waiting_requests": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 95.0,
+          "mean": 95.0,
+          "minimum": 95.0,
+          "std": 0.0
+        },
+        "output_tokens_per_second": {
+          "count": 5,
+          "cv": 0.025089190110887196,
+          "maximum": 52.19527201785016,
+          "mean": 50.75194485341815,
+          "minimum": 49.52396246977625,
+          "std": 1.273325192924671
+        },
+        "peak_kv_block_utilization": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 0.03731343283582089,
+          "mean": 0.03731343283582089,
+          "minimum": 0.03731343283582089,
+          "std": 0.0
+        },
+        "requests_per_second": {
+          "count": 5,
+          "cv": 0.02508919011088721,
+          "maximum": 0.4247662110827649,
+          "mean": 0.41302038454930134,
+          "minimum": 0.4030270383282572,
+          "std": 0.010362346947629164
+        },
+        "tpot_p50_ms": {
+          "count": 5,
+          "cv": 0.02706610221216037,
+          "maximum": 33.00751500787402,
+          "mean": 32.01488278818898,
+          "minimum": 30.910085011811024,
+          "std": 0.8665180898554566
+        },
+        "tpot_p95_ms": {
+          "count": 5,
+          "cv": 0.080823410868744,
+          "maximum": 41.47747577165355,
+          "mean": 36.33893778062992,
+          "minimum": 34.524056049606294,
+          "std": 2.9370368987775763
+        },
+        "ttft_p50_ms": {
+          "count": 5,
+          "cv": 0.05309735508965497,
+          "maximum": 117194.5318955,
+          "mean": 108918.48125410001,
+          "minimum": 101652.651637,
+          "std": 5783.283274974877
+        },
+        "ttft_p95_ms": {
+          "count": 5,
+          "cv": 0.028551083784560498,
+          "maximum": 223024.62710274998,
+          "mean": 216485.81927986996,
+          "minimum": 209428.12755449998,
+          "std": 6180.904764428789
+        }
+      },
+      "repeat_count": 5,
+      "run_ids": [
+        "20260827T190253.335716Z-decode_first-poisson-mixed",
+        "20260827T190734.269116Z-decode_first-poisson-mixed",
+        "20260827T191400.400005Z-decode_first-poisson-mixed",
+        "20260827T191848.913584Z-decode_first-poisson-mixed",
+        "20260827T192339.205910Z-decode_first-poisson-mixed"
+      ]
+    },
+    "prefill_first": {
+      "metrics": {
+        "e2e_p50_ms": {
+          "count": 5,
+          "cv": 0.0945952431312076,
+          "maximum": 8883.415961499999,
+          "mean": 7720.790297500001,
+          "minimum": 6988.5379725,
+          "std": 730.3500353570812
+        },
+        "e2e_p95_ms": {
+          "count": 5,
+          "cv": 0.0959582144058321,
+          "maximum": 11246.544920900002,
+          "mean": 9742.65058866,
+          "minimum": 8948.585031649998,
+          "std": 934.8873540677426
+        },
+        "forced_prefill_steps": {
+          "count": 5,
+          "cv": null,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "std": 0.0
+        },
+        "gpu_memory_peak_mib": {
+          "count": 5,
+          "cv": 0.01674368853731414,
+          "maximum": 6485.0,
+          "mean": 6330.8,
+          "minimum": 6227.0,
+          "std": 106.00094339202836
+        },
+        "gpu_utilization_mean": {
+          "count": 5,
+          "cv": 0.07280519000145605,
+          "maximum": 41.77272727272727,
+          "mean": 38.860720011890564,
+          "minimum": 34.23529411764706,
+          "std": 2.8292621040590777
+        },
+        "gpu_utilization_peak": {
+          "count": 5,
+          "cv": 0.050266826679700866,
+          "maximum": 62.0,
+          "mean": 58.0,
+          "minimum": 55.0,
+          "std": 2.9154759474226504
+        },
+        "itl_p95_ms": {
+          "count": 5,
+          "cv": 0.0714370685745676,
+          "maximum": 88.44679199999999,
+          "mean": 82.64601253,
+          "minimum": 75.591639,
+          "std": 5.903988864520183
+        },
+        "max_running_requests": {
+          "count": 5,
+          "cv": 0.0,
+          "maximum": 32.0,
+          "mean": 32.0,
+          "minimum": 32.0,
+          "std": 0.0
+        },
+        "max_waiting_requests": {
+          "count": 5,
+          "cv": 0.04336958179588107,
+          "maximum": 36.0,
+          "mean": 34.2,
+          "minimum": 32.0,
+          "std": 1.4832396974191326
+        },
+        "output_tokens_per_second": {
+          "count": 5,
+          "cv": 0.04875851919959938,
+          "maximum": 622.4966361796229,
+          "mean": 596.543229082045,
+          "minimum": 550.2048843236375,
+          "std": 29.0865644885879
+        },
+        "peak_kv_block_utilization": {
+          "count": 5,
+          "cv": 0.006407071568767229,
+          "maximum": 0.5223880597014925,
+          "mean": 0.5208955223880597,
+          "minimum": 0.5149253731343284,
+          "std": 0.0033374148917906907
+        },
+        "requests_per_second": {
+          "count": 5,
+          "cv": 0.048758519199599386,
+          "maximum": 5.065890593909692,
+          "mean": 4.8546812262536205,
+          "minimum": 4.477578811227519,
+          "std": 0.23670706777822184
+        },
+        "tpot_p50_ms": {
+          "count": 5,
+          "cv": 0.06305053023237306,
+          "maximum": 48.68249564566929,
+          "mean": 44.14824809125109,
+          "minimum": 41.1640531496063,
+          "std": 2.783570450983733
+        },
+        "tpot_p95_ms": {
+          "count": 5,
+          "cv": 0.07038150582645364,
+          "maximum": 51.66317161023621,
+          "mean": 46.92146181063742,
+          "minimum": 43.00857887795276,
+          "std": 3.3024031378110994
+        },
+        "ttft_p50_ms": {
+          "count": 5,
+          "cv": 0.15494701528743163,
+          "maximum": 2675.0459955,
+          "mean": 2118.0840177,
+          "minimum": 1803.3787945,
+          "std": 328.1907966706265
+        },
+        "ttft_p95_ms": {
+          "count": 5,
+          "cv": 0.15104189647102834,
+          "maximum": 6285.1538399,
+          "mean": 5122.292267610001,
+          "minimum": 4268.6905864,
+          "std": 773.6807383786987
+        }
+      },
+      "repeat_count": 5,
+      "run_ids": [
+        "20260827T190213.090595Z-prefill_first-poisson-mixed",
+        "20260827T191219.384572Z-prefill_first-poisson-mixed",
+        "20260827T191329.509713Z-prefill_first-poisson-mixed",
+        "20260827T191818.462449Z-prefill_first-poisson-mixed",
+        "20260827T192835.178088Z-prefill_first-poisson-mixed"
+      ]
+    }
+  },
+  "policy_order": [
+    "prefill_first",
+    "decode_first",
+    "bounded_decode_first"
+  ]
+}

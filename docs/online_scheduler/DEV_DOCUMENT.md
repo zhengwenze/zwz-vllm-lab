@@ -1,8 +1,10 @@
 # Nano-vLLM 在线调度器开发文档
 
-> **状态标签**：`Implemented`（在线调度工作树） · `CPU Verified`（46 tests passed） · `GPU Pending`（RTX 4060 实验）
+> **状态标签**：`Implemented`（在线调度） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 三策略 × 5 次重复；[证据](../../reports/nanovllm-online-rtx4060-20260828.md)）
 >
 > **证据基线**：`bb823b3`　|　**文档日期**：2026-08-22　|　**目标阶段**：单机在线调度可复现实验版
+
+本文保留 2026-08-22 的设计基线；后续 GPU 结果与当前证据状态以上述报告和公开证据包为准。
 
 ## 1. 项目目标与证据边界
 
@@ -71,7 +73,7 @@ flowchart LR
 | `BlockManager` | `Implemented` | KV Block 生命周期与 Prefix Cache |
 | `LLMEngine` | `Implemented / CPU Verified` | 请求 ID 映射、执行一步、生成 `RequestOutput/StepStats` |
 | `AsyncLLMEngine` | `Implemented / CPU Verified` | 命令 drain、单 worker、每请求异步流、异常广播和关闭 |
-| HTTP/SSE 层 | `Implemented`，GPU Pending | FastAPI 参数校验、状态码映射、SSE 编码、健康和 JSON 指标 |
+| HTTP/SSE 层 | `GPU Verified` | FastAPI 参数校验、状态码映射、SSE 编码、健康和 JSON 指标；RTX 4060 正式实验已端到端运行 |
 
 本阶段不引入数据库。所有请求状态都是进程内状态，进程退出即丢失。
 

@@ -1,14 +1,14 @@
 # Nano-vLLM 在线调度器项目展示（中文）
 
-> **状态标签**：`Implemented`（在线调度扩展） · `CPU Verified`（46 tests passed） · `GPU Pending`
+> **状态标签**：`Implemented`（在线调度扩展） · `CPU Verified`（46 tests passed） · `GPU Verified`（RTX 4060 15-run）
 >
 > **面试原则**：只讲能指向代码、测试或原始实验数据的事实。
 
 ## 1. 一句话介绍
 
-我基于 Nano-vLLM 的离线批处理引擎，扩展一个支持在线请求、逐 token 流式输出、请求取消、队列背压和可观测调度策略的单机实验型推理服务，并计划在 RTX 4060 上用固定负载比较 Prefill/Decode 调度对 TTFT 与 TPOT 的影响。
+我基于 Nano-vLLM 的离线批处理引擎，扩展一个支持在线请求、逐 token 流式输出、请求取消、队列背压和可观测调度策略的单机实验型推理服务，并在 RTX 4060 上用固定负载完成 Prefill/Decode 三策略各 5 次重复的 TTFT、TPOT 与吞吐实验。
 
-在线扩展已通过纯 CPU 契约测试；面试时可以说“已实现并完成 CPU 验证”，但 GPU 证据补齐前不能说已经优化了多少。
+在线扩展已通过纯 CPU 契约测试和 GPU 正式实验；面试时必须同时给出模型、固定 workload、repeat 数与公开证据链接，不能把本次结果推广为普适加速。
 
 ## 2. 为什么值得做
 
@@ -167,6 +167,6 @@ HTTP 请求可以并发，但 CUDA 引擎状态需要单一所有者。我选择
 
 - `Implemented`：上游离线核心与本人在线调度、异步 worker、SSE 适配、benchmark 代码均可定位。
 - `CPU Verified`：`python -m pytest -q` 为 `46 passed`；Ruff、`compileall` 与 `git diff --check` 通过。
-- `GPU Pending`：RTX 4060 表格保持空白，无个人 GPU 性能结论。
+- `GPU Verified`：RTX 4060 结果只引用 2026-08-28 的 15-run 报告与公开证据包。
 
 开发主机 Python 3.13 只用于纯 CPU 测试；项目声明 `>=3.10,<3.13`，正式 WSL 运行使用 Python 3.11。这一差异必须主动说明，不能把 CPU 测试解释成受支持版本上的 GPU 运行。
