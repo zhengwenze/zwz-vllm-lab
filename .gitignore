@@ -40,3 +40,6 @@ coverage.xml
 # Project-local generated artifacts
 artifacts/*
 !artifacts/README.md
+
+# Interview checklists (not to be uploaded)
+docs/interview/
